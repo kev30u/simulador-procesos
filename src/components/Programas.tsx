@@ -15,7 +15,7 @@ export default function Programas({
       {programas.map((programa) => (
         <div key={programa.nombre} className="flex flex-col items-center gap-2">
           <BolitaProceso
-            nombre={programa.nombre}
+            proceso={programa}
             onClick={() => onProgramaClick(programa.nombre)}
           />
         </div>

@@ -12,7 +12,7 @@ export default function Preparados({ procesos }: PreparadosProps) {
       <div className="flex flex-wrap gap-4">
         {procesos.map((proceso) => (
           <div key={proceso.nombre} className="flex flex-col items-center gap-2">
-            <BolitaProceso nombre={proceso.nombre} />
+            <BolitaProceso proceso={proceso} />
           </div>
         ))}
       </div>

@@ -112,7 +112,7 @@ export default function Home() {
             {mensajeError !== "" && (
               <p className="text-sm text-red-600">{mensajeError}</p>
             )}
-            <PanelBCP />
+            <PanelBCP proceso={procesoEnEjecucion} />
           </section>
         </div>
       </div>

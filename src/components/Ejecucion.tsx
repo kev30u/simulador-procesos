@@ -23,7 +23,7 @@ export default function Ejecucion({ proceso }: EjecucionProps) {
         <h3 className="font-medium">Ejecución</h3>
       </div>
       <div className="mb-4 flex justify-center">
-        {proceso !== null && <BolitaProceso nombre={proceso.nombre} />}
+        {proceso !== null && <BolitaProceso proceso={proceso} />}
         {proceso === null && (
           <p className="text-sm text-slate-500">
             No hay un proceso en ejecución
