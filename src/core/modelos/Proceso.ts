@@ -3,9 +3,15 @@ import { BCP } from "./BCP";
 // Zona donde esta el proceso: programas, preparados o en ejecucion.
 export type Estado = "inactivo" | "preparado" | "ejecucion";
 
+export interface ProgramaInicial {
+  nombre: string;
+  color: string;
+}
+
 // Esta misma clase sirve para el programa y para el proceso, lo que cambia es si tiene BCP.
 export class Proceso {
   public readonly nombre: string;
+  public readonly color: string;
 
   // Dejo _bcp privado para que solo se cambie con asignarBCP y quitarBCP.
   // Es null cuando todavía es solo un programa.
@@ -13,8 +19,9 @@ export class Proceso {
 
   public estado: Estado = "inactivo";
 
-  constructor(nombre: string) {
+  constructor(nombre: string, color: string) {
     this.nombre = nombre;
+    this.color = color;
     this.estado = "inactivo";
     this._bcp = null;
   }

@@ -8,7 +8,13 @@ const global = globalThis as unknown as {
 };
 
 if (!global.simulador || !global.planificador) {
-  global.simulador = new Simulador(["P1", "P2", "P3", "P4", "P5"]);
+  global.simulador = new Simulador([
+    { nombre: "P1", color: "#3B82F6" },
+    { nombre: "P2", color: "#22C55E" },
+    { nombre: "P3", color: "#A855F7" },
+    { nombre: "P4", color: "#F97316" },
+    { nombre: "P5", color: "#EF4444" },
+  ]);
   global.planificador = new Planificador(global.simulador);
 }
 

@@ -30,10 +30,13 @@ export default function Ejecucion({ proceso }: EjecucionProps) {
           </p>
         )}
       </div>
-      <div className="h-3 w-full rounded-full bg-slate-200">
+      <div className="h-5 w-full rounded-full bg-slate-200">
         <div
-          className="h-3 rounded-full bg-blue-500 transition-[width] duration-300 ease-in-out"
-          style={{ width: `${progreso}%` }}
+          className="h-5 rounded-full transition-[width] duration-300 ease-in-out"
+          style={{
+            width: `${progreso}%`,
+            backgroundColor: proceso === null ? "#CBD5E1" : proceso.color,
+          }}
         />
       </div>
       <p className="mt-2 text-right text-xs text-slate-500">

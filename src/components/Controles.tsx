@@ -1,5 +1,4 @@
 type ControlesProps = {
-  onRetroceder: () => void;
   onDetener: () => void;
   onPausar: () => void;
   onReproducir: () => void;
@@ -7,7 +6,6 @@ type ControlesProps = {
 };
 
 export default function Controles({
-  onRetroceder,
   onDetener,
   onPausar,
   onReproducir,
@@ -19,19 +17,18 @@ export default function Controles({
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
-          aria-label="Retroceder un tic"
-          onClick={onRetroceder}
-          className="rounded-md bg-slate-200 px-3 py-2 font-bold hover:bg-slate-300"
-        >
-          &lt;&lt;
-        </button>
-        <button
-          type="button"
           aria-label="Detener"
           onClick={onDetener}
           className="rounded-md bg-red-100 px-3 py-2 font-bold text-red-700 hover:bg-red-200"
         >
-          ■
+          <svg
+            aria-hidden="true"
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <rect x="5" y="5" width="14" height="14" rx="1" />
+          </svg>
         </button>
         <button
           type="button"
@@ -39,7 +36,15 @@ export default function Controles({
           onClick={onPausar}
           className="rounded-md bg-amber-100 px-3 py-2 font-bold text-amber-700 hover:bg-amber-200"
         >
-          ||
+          <svg
+            aria-hidden="true"
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <rect x="6" y="5" width="4" height="14" rx="1" />
+            <rect x="14" y="5" width="4" height="14" rx="1" />
+          </svg>
         </button>
         <button
           type="button"
@@ -47,7 +52,14 @@ export default function Controles({
           onClick={onReproducir}
           className="rounded-md bg-green-100 px-3 py-2 font-bold text-green-700 hover:bg-green-200"
         >
-          &gt;
+          <svg
+            aria-hidden="true"
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="m8 5 11 7-11 7V5Z" />
+          </svg>
         </button>
         <button
           type="button"
@@ -55,7 +67,14 @@ export default function Controles({
           onClick={onAvanzar}
           className="rounded-md bg-slate-200 px-3 py-2 font-bold hover:bg-slate-300"
         >
-          &gt;&gt;
+          <svg
+            aria-hidden="true"
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="m4 5 7 7-7 7V5Zm9 0 7 7-7 7V5Z" />
+          </svg>
         </button>
       </div>
     </div>

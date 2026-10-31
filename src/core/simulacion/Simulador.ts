@@ -1,5 +1,5 @@
 import { BCP } from "../modelos/BCP";
-import { Proceso } from "../modelos/Proceso";
+import { Proceso, type ProgramaInicial } from "../modelos/Proceso";
 // import { ArbolBinario } from "../estructuras/ArbolBinario";
 import { ListaPreparados } from "../estructuras/ListaPreparados";
 import { ArbolPrioridadMinima } from "../estructuras/ArbolPrioridadMinima";
@@ -19,13 +19,15 @@ export class Simulador {
   // Proceso que está usando la CPU ahora. Es null si no hay ninguno.
   public enEjecucion: Proceso | null = null;
 
-  // Recibe los nombres de los programas con los que arranca el simulador.
-  constructor(private nombresIniciales: string[]) {
+  // Recibe los nombres y colores iniciales de los programas.
+  constructor(private programasIniciales: ProgramaInicial[]) {
     this.cargarProgramas();
   }
 
   private cargarProgramas(): void {
-    this.programas = this.nombresIniciales.map((nombre) => new Proceso(nombre));
+    this.programas = this.programasIniciales.map(
+      (programa) => new Proceso(programa.nombre, programa.color),
+    );
   }
 
   // Programa -> Preparados: se le crea el BCP y entra al árbol.
@@ -48,6 +50,7 @@ export class Simulador {
     const bcp = proceso.bcp;
     return {
       nombre: proceso.nombre,
+      color: proceso.color,
       estado: proceso.estado,
       bcp:
         bcp === null

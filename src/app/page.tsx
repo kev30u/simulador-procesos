@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import Controles from "@/components/Controles";
 import Ejecucion from "@/components/Ejecucion";
@@ -11,6 +11,7 @@ import {
   avanzarUnTick,
   iniciarPrograma,
   obtenerEstado,
+  reiniciarSimulacion,
 } from "@/services/simulador";
 import type { EstadoSimulador, ProcesoResponse } from "@/types/estado";
 
@@ -19,12 +20,57 @@ export default function Home() {
   const [estado, setEstado] = useState<EstadoSimulador | null>(null);
   const [ultimaAccion, setUltimaAccion] = useState("Ninguna");
   const [mensajeError, setMensajeError] = useState("");
+  const estadoActual = useRef<EstadoSimulador | null>(null);
+  const intervaloSimulacion = useRef<ReturnType<typeof setInterval> | null>(
+    null,
+  );
+  const cambioVisual = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ============ Acciones de la simulación ============
   async function avanzarSimulacion() {
     try {
       const nuevoEstado = await avanzarUnTick();
-      setEstado(nuevoEstado);
+
+      const procesoAnterior = estadoActual.current?.enEjecucion;
+      const procesoSiguiente = nuevoEstado.enEjecucion;
+      const bcpAnterior = procesoAnterior?.bcp;
+      const procesoCambio =
+        procesoAnterior !== null &&
+        procesoAnterior !== undefined &&
+        bcpAnterior !== null &&
+        bcpAnterior !== undefined &&
+        (procesoSiguiente === null ||
+          procesoSiguiente.bcp?.pid !== bcpAnterior.pid);
+
+      if (
+        procesoCambio &&
+        bcpAnterior !== null &&
+        bcpAnterior !== undefined
+      ) {
+        const procesoActualizado = buscarProceso(nuevoEstado, bcpAnterior.pid);
+        const procesoParaMostrar =
+          procesoActualizado ?? crearProcesoTerminado(procesoAnterior);
+
+        setEstado({
+          ...nuevoEstado,
+          enEjecucion: {
+            ...procesoParaMostrar,
+            estado: "ejecucion",
+          },
+        });
+
+        if (cambioVisual.current !== null) {
+          clearTimeout(cambioVisual.current);
+        }
+
+        cambioVisual.current = setTimeout(() => {
+          setEstado(nuevoEstado);
+          cambioVisual.current = null;
+        }, 400);
+      } else {
+        setEstado(nuevoEstado);
+      }
+
       setMensajeError("");
       setUltimaAccion("Avanzar");
     } catch (error) {
@@ -32,8 +78,83 @@ export default function Home() {
     }
   }
 
+  function buscarProceso(
+    estadoActual: EstadoSimulador,
+    pid: number,
+  ): ProcesoResponse | null {
+    const procesos = [
+      ...estadoActual.programas,
+      ...estadoActual.preparados,
+    ];
+    const procesoEncontrado = procesos.find(
+      (proceso) => proceso.bcp?.pid === pid,
+    );
+
+    return procesoEncontrado ?? null;
+  }
+
+  function crearProcesoTerminado(
+    proceso: ProcesoResponse,
+  ): ProcesoResponse {
+    if (proceso.bcp === null) {
+      return proceso;
+    }
+
+    return {
+      ...proceso,
+      bcp: {
+        ...proceso.bcp,
+        tiempoRestante: 0,
+      },
+    };
+  }
+
+  function pausarSimulacion() {
+    if (intervaloSimulacion.current !== null) {
+      clearInterval(intervaloSimulacion.current);
+      intervaloSimulacion.current = null;
+    }
+
+    setUltimaAccion("Pausar");
+  }
+
+  function reproducirSimulacion() {
+    if (intervaloSimulacion.current !== null) {
+      return;
+    }
+
+    intervaloSimulacion.current = setInterval(() => {
+      avanzarSimulacion();
+    }, 1000);
+
+    setUltimaAccion("Reproducir");
+  }
+
+  async function detenerSimulacion() {
+    pausarSimulacion();
+
+    try {
+      if (cambioVisual.current !== null) {
+        clearTimeout(cambioVisual.current);
+        cambioVisual.current = null;
+      }
+
+      const estadoInicial = await reiniciarSimulacion();
+      setEstado(estadoInicial);
+      setMensajeError("");
+      setUltimaAccion("Detener");
+    } catch (error) {
+      mostrarError(error);
+    }
+  }
+
   async function iniciarProgramaSeleccionado(nombre: string) {
     try {
+      if (cambioVisual.current !== null) {
+        clearTimeout(cambioVisual.current);
+        cambioVisual.current = null;
+      }
+
       const nuevoEstado = await iniciarPrograma(nombre);
       setEstado(nuevoEstado);
       setMensajeError("");
@@ -54,6 +175,10 @@ export default function Home() {
 
   // ============ Cargar el estado inicial ============
   useEffect(() => {
+    estadoActual.current = estado;
+  }, [estado]);
+
+  useEffect(() => {
     obtenerEstado()
       .then((estadoInicial) => {
         setEstado(estadoInicial);
@@ -61,6 +186,17 @@ export default function Home() {
       .catch((error: unknown) => {
         mostrarError(error);
       });
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (intervaloSimulacion.current !== null) {
+        clearInterval(intervaloSimulacion.current);
+      }
+      if (cambioVisual.current !== null) {
+        clearTimeout(cambioVisual.current);
+      }
+    };
   }, []);
 
   // ============ Preparar los datos para mostrar ============
@@ -100,10 +236,9 @@ export default function Home() {
           <section className="space-y-4 rounded-lg bg-white p-4 shadow-sm">
             <h2 className="text-lg font-semibold">Panel 3</h2>
             <Controles
-              onRetroceder={() => setUltimaAccion("Retroceder")}
-              onDetener={() => setUltimaAccion("Detener")}
-              onPausar={() => setUltimaAccion("Pausar")}
-              onReproducir={() => setUltimaAccion("Reproducir")}
+              onDetener={detenerSimulacion}
+              onPausar={pausarSimulacion}
+              onReproducir={reproducirSimulacion}
               onAvanzar={avanzarSimulacion}
             />
             <p className="text-sm text-slate-500">

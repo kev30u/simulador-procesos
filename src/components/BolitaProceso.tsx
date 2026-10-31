@@ -31,7 +31,8 @@ export default function BolitaProceso({
       <button
         type="button"
         onClick={onClick}
-        className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-500 text-center text-xs font-bold text-white hover:bg-blue-600"
+        style={{ backgroundColor: proceso.color }}
+        className="flex h-20 w-20 items-center justify-center rounded-full text-center text-xs font-bold text-white hover:opacity-80"
       >
         {proceso.nombre}
       </button>

@@ -11,6 +11,7 @@ export interface BcpResponse {
 
 export interface ProcesoResponse {
   nombre: string;
+  color: string;
   estado: EstadoProceso;
   bcp: BcpResponse | null;
 }

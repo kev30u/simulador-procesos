@@ -26,6 +26,20 @@ export async function avanzarUnTick(): Promise<EstadoSimulador> {
   return datos;
 }
 
+// ============ Reiniciar la simulación ============
+export async function reiniciarSimulacion(): Promise<EstadoSimulador> {
+  const respuesta = await fetch("/api/simulador/reiniciar", {
+    method: "POST",
+  });
+
+  if (!respuesta.ok) {
+    throw new Error("No se pudo detener la simulación");
+  }
+
+  const datos: EstadoSimulador = await respuesta.json();
+  return datos;
+}
+
 // ============ Iniciar un programa por su nombre ============
 export async function iniciarPrograma(
   nombre: string,
