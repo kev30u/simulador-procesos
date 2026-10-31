@@ -11,9 +11,13 @@ export default function Ejecucion({ proceso }: EjecucionProps) {
   if (proceso !== null && proceso.bcp !== null) {
     const tiempoEjecutado =
       proceso.bcp.tiempoCpu - proceso.bcp.tiempoRestante;
+    const tiempoMostrado = Math.min(
+      proceso.bcp.tiempoCpu,
+      tiempoEjecutado + 1,
+    );
 
     progreso = Math.round(
-      (tiempoEjecutado / proceso.bcp.tiempoCpu) * 100,
+      (tiempoMostrado / proceso.bcp.tiempoCpu) * 100,
     );
   }
 
