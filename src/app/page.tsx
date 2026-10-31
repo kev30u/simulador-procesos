@@ -220,7 +220,7 @@ export default function Home() {
 
         <div className="grid gap-4 lg:grid-cols-3">
           <section className="rounded-lg bg-white p-4 shadow-sm">
-            <h2 className="mb-4 text-lg font-semibold">Panel 1</h2>
+            <h2 className="mb-4 text-lg font-semibold">Programas</h2>
             <Programas
               programas={programas}
               onProgramaClick={iniciarProgramaSeleccionado}
@@ -228,13 +228,11 @@ export default function Home() {
           </section>
 
           <section className="space-y-4 rounded-lg bg-white p-4 shadow-sm">
-            <h2 className="text-lg font-semibold">Panel 2</h2>
             <Preparados procesos={procesosPreparados} />
             <Ejecucion proceso={procesoEnEjecucion} />
           </section>
 
           <section className="space-y-4 rounded-lg bg-white p-4 shadow-sm">
-            <h2 className="text-lg font-semibold">Panel 3</h2>
             <Controles
               onDetener={detenerSimulacion}
               onPausar={pausarSimulacion}
