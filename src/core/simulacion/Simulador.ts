@@ -1,7 +1,5 @@
 import { BCP } from "../modelos/BCP";
 import { Proceso, type ProgramaInicial } from "../modelos/Proceso";
-// import { ArbolBinario } from "../estructuras/ArbolBinario";
-import { ListaPreparados } from "../estructuras/ListaPreparados";
 import { ArbolPrioridadMinima } from "../estructuras/ArbolPrioridadMinima";
 
 export class Simulador {
@@ -13,8 +11,6 @@ export class Simulador {
   public programas: Proceso[] = [];
 
   // Árbol de preparados: el siguiente en ejecutarse es el más a la izquierda.
-//   public preparados: ArbolBinario = new ArbolBinario();
-  // public preparados: ListaPreparados = new ListaPreparados();
   public preparados: ArbolPrioridadMinima = new ArbolPrioridadMinima();
   // Proceso que está usando la CPU ahora. Es null si no hay ninguno.
   public enEjecucion: Proceso | null = null;
