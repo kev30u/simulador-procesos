@@ -21,7 +21,16 @@ export default function Suspendidos({ procesos }: SuspendidosProps) {
               key={proceso.nombre}
               className="flex flex-col items-center gap-2"
             >
-              <BolitaProceso proceso={proceso} />
+              <BolitaProceso proceso={proceso} mostrarProgresoCpu />
+              {proceso.bcp !== null && (
+                <span
+                  className="text-xs font-medium"
+                  style={{ color: proceso.color }}
+                >
+                  Ticks restantes:{" "}
+                  {proceso.bcp.tiempoInteractividadRestante}
+                </span>
+              )}
             </div>
           ))}
         </div>

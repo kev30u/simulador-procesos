@@ -146,7 +146,10 @@ export default function Home() {
 
           <section className="space-y-4 rounded-lg bg-white p-4 shadow-sm">
             <Preparados procesos={procesosPreparados} />
-            <Ejecucion proceso={procesoEnEjecucion} />
+            <Ejecucion
+              proceso={procesoEnEjecucion}
+              turnoGastado={estado === null ? 0 : estado.turnoGastado}
+            />
             <Suspendidos procesos={procesosSuspendidos} />
           </section>
 
