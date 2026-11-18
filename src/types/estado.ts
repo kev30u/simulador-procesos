@@ -1,4 +1,8 @@
-export type EstadoProceso = "inactivo" | "preparado" | "ejecucion";
+export type EstadoProceso =
+  | "inactivo"
+  | "preparado"
+  | "ejecucion"
+  | "suspendido";
 
 export interface BcpResponse {
   pid: number;
@@ -7,6 +11,7 @@ export interface BcpResponse {
   interactividad: number;
   tiempoCpu: number;
   tiempoRestante: number;
+  tiempoInteractividadRestante: number;
 }
 
 export interface ProcesoResponse {
@@ -19,6 +24,7 @@ export interface ProcesoResponse {
 export interface EstadoSimulador {
   programas: ProcesoResponse[];
   preparados: ProcesoResponse[];
+  suspendidos: ProcesoResponse[];
   enEjecucion: ProcesoResponse | null;
   turnoGastado: number;
 }

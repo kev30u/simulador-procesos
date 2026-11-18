@@ -117,11 +117,13 @@ export default function Home() {
   // ============ Preparar los datos para mostrar ============
   let programas: ProcesoResponse[] = [];
   let procesosPreparados: ProcesoResponse[] = [];
+  let procesosSuspendidos: ProcesoResponse[] = [];
   let procesoEnEjecucion: ProcesoResponse | null = null;
 
   if (estado !== null) {
     programas = estado.programas;
     procesosPreparados = estado.preparados;
+    procesosSuspendidos = estado.suspendidos;
     procesoEnEjecucion = estado.enEjecucion;
   }
 
@@ -145,7 +147,7 @@ export default function Home() {
           <section className="space-y-4 rounded-lg bg-white p-4 shadow-sm">
             <Preparados procesos={procesosPreparados} />
             <Ejecucion proceso={procesoEnEjecucion} />
-            <Suspendidos />
+            <Suspendidos procesos={procesosSuspendidos} />
           </section>
 
           <section className="space-y-4 rounded-lg bg-white p-4 shadow-sm">
