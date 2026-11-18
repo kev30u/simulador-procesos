@@ -31,7 +31,11 @@ export default function Ejecucion({ proceso, turnoGastado }: EjecucionProps) {
 
       <div className="mb-4 flex justify-center">
         {proceso !== null && (
-          <BolitaProceso proceso={proceso} mostrarProgresoCpu />
+          <BolitaProceso
+            key={proceso.bcp?.pid}
+            proceso={proceso}
+            mostrarProgresoCpu
+          />
         )}
         {proceso === null && (
           <p className="text-sm text-slate-500">
@@ -42,6 +46,7 @@ export default function Ejecucion({ proceso, turnoGastado }: EjecucionProps) {
 
       <div className="h-5 w-full rounded-full bg-slate-200">
         <div
+          key={proceso?.bcp?.pid ?? "sin-proceso"}
           className="h-5 rounded-full transition-[width] duration-300 ease-in-out"
           style={{
             width: `${progreso}%`,
