@@ -12,8 +12,12 @@ export class Simulador {
 
   // Árbol de preparados: el siguiente en ejecutarse es el más a la izquierda.
   public preparados: ArbolPrioridadMinima = new ArbolPrioridadMinima();
+
   // Proceso que está usando la CPU ahora. Es null si no hay ninguno.
   public enEjecucion: Proceso | null = null;
+
+    // Procesos que están esperando en Suspendido. Cada uno lleva su propia cuenta en el BCP.
+  public suspendidos: Proceso[] = [];
 
   // Recibe los nombres y colores iniciales de los programas.
   constructor(private programasIniciales: ProgramaInicial[]) {
@@ -41,6 +45,20 @@ export class Simulador {
     this.programas.push(proceso);
   }
 
+    // Ejecución -> Suspendido: el proceso sale de la CPU y espera en la lista de suspendidos.
+  public suspenderProceso(proceso: Proceso): void {
+    proceso.estado = "suspendido";
+    this.suspendidos.push(proceso);
+  }
+
+  // Suspendido -> Preparados: sale de la lista de suspendidos y entra al árbol.
+  public reanudarProceso(proceso: Proceso): void {
+    // filter se queda con todos los suspendidos MENOS este.
+    this.suspendidos = this.suspendidos.filter((p) => p !== proceso);
+    proceso.estado = "preparado";
+    this.preparados.insertar(proceso);
+  }
+
   // Convierte un Proceso en un objeto sencillo, listo para mandarse como JSON.
   private resumir(proceso: Proceso) {
     const bcp = proceso.bcp;
@@ -58,6 +76,7 @@ export class Simulador {
               interactividad: bcp.interactividad,
               tiempoCpu: bcp.tiempoCpu,
               tiempoRestante: bcp.tiempoRestante,
+              tiempoInteractividadRestante: bcp.tiempoInteractividadRestante,
             },
     };
   }
@@ -66,6 +85,7 @@ export class Simulador {
     return {
       programas: this.programas.map((p) => this.resumir(p)),
       preparados: this.preparados.recorrerEnOrden().map((p) => this.resumir(p)),
+      suspendidos: this.suspendidos.map((p) => this.resumir(p)),
       enEjecucion:
         this.enEjecucion === null ? null : this.resumir(this.enEjecucion),
       turnoGastado: this.turnoGastado,
@@ -76,6 +96,7 @@ export class Simulador {
     BCP.reiniciarContador();
     this.preparados = new ArbolPrioridadMinima();
     this.enEjecucion = null;
+    this.suspendidos = [];
     this.turnoGastado = 0;
     this.cargarProgramas();
   }
@@ -89,12 +110,6 @@ export class Simulador {
   }
 }
 
-// Dos cosas para confirmar con A:
-
-// Nombres exactos de los métodos. Si A los llama distinto, 
-// o si estaVacio es un getter (sin paréntesis), ajustas esa línea y ya.
-// Qué devuelve extraerMenor() cuando el árbol está vacío. Yo asumí null. 
-// Si A devuelve undefined, tu Planificador debe revisarlo igual.
 
 
   
