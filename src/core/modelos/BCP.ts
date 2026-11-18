@@ -19,6 +19,7 @@ export class BCP {
   public readonly prioridad: number;
   public readonly interactividad: number;
   private _tiempoRestante: number;
+  private _tiempoInteractividadRestante: number;
 
   constructor() {
     this.pid = BCP.contadorPid;
@@ -39,6 +40,9 @@ export class BCP {
     );
 
     this._tiempoRestante = this.tiempoCpu;
+    
+    // La espera en Suspendido dura tantos ticks como la interactividad.
+    this._tiempoInteractividadRestante = this.interactividad;
   }
 
   get tiempoRestante(): number {
@@ -50,6 +54,16 @@ export class BCP {
     return this._tiempoRestante <= 0;
   }
 
+
+  get tiempoInteractividadRestante(): number {
+    return this._tiempoInteractividadRestante;
+  }
+
+  // Es true mientras al proceso le falte esperar en Suspendido.
+  public get tieneSuspensionPendiente(): boolean {
+    return this._tiempoInteractividadRestante > 0;
+  }
+
   // Lo usa el boton Reiniciar para que los PID vuelvan a empezar en 1.
   public static reiniciarContador(): void {
     BCP.contadorPid = 1;
@@ -59,6 +73,13 @@ export class BCP {
     // Solo resto si queda tiempo, asi nunca baja de 0.
     if (this._tiempoRestante > 0) {
       this._tiempoRestante--;
+    }
+  }
+
+  // Gasta 1 tick de la espera en Suspendido, sin bajar de 0.
+  public gastarTiempoInteractividad(): void {
+    if (this._tiempoInteractividadRestante > 0) {
+      this._tiempoInteractividadRestante--;
     }
   }
 

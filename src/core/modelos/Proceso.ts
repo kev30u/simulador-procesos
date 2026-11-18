@@ -1,7 +1,7 @@
 import { BCP } from "./BCP";
 
 // Zona donde esta el proceso: programas, preparados o en ejecucion.
-export type Estado = "inactivo" | "preparado" | "ejecucion";
+export type Estado = "inactivo" | "preparado" | "ejecucion" | "suspendido";
 
 export interface ProgramaInicial {
   nombre: string;
