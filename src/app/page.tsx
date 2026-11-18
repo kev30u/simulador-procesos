@@ -7,6 +7,7 @@ import Ejecucion from "@/components/Ejecucion";
 import PanelBCP from "@/components/PanelBCP";
 import Preparados from "@/components/Preparados";
 import Programas from "@/components/Programas";
+import Suspendidos from "@/components/Suspendidos";
 import {
   avanzarUnTick,
   iniciarPrograma,
@@ -144,6 +145,7 @@ export default function Home() {
           <section className="space-y-4 rounded-lg bg-white p-4 shadow-sm">
             <Preparados procesos={procesosPreparados} />
             <Ejecucion proceso={procesoEnEjecucion} />
+            <Suspendidos />
           </section>
 
           <section className="space-y-4 rounded-lg bg-white p-4 shadow-sm">
