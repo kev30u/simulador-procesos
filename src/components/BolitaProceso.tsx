@@ -49,8 +49,13 @@ export default function BolitaProceso({
               <p>PID: {proceso.bcp.pid}</p>
               <p>Quantum: {proceso.bcp.quantum}</p>
               <p>Prioridad: {proceso.bcp.prioridad}</p>
+              <p>Interactividad: {proceso.bcp.interactividad}</p>
               <p>Tiempo de CPU: {proceso.bcp.tiempoCpu}</p>
               <p>Tiempo restante: {proceso.bcp.tiempoRestante}</p>
+              {/* <p>
+                Tiempo de interactividad restante:{" "}
+                {proceso.bcp.tiempoInteractividadRestante}
+              </p> */}
             </div>
           )}
         </div>
