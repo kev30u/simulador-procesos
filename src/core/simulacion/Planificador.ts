@@ -2,99 +2,99 @@ import { Simulador } from "./Simulador";
 import { Proceso } from "../modelos/Proceso";
 
 export class Planificador {
-  // Guardo el simulador para poder leer y modificar sus zonas.
-  constructor(private simulador: Simulador) {}
+  private simulador: Simulador;
 
-  // Un tick = un paso del reloj.
+  constructor(simulador: Simulador) {
+    this.simulador = simulador;
+  }
+
+  // ======================================================
   public tick(): void {
-    // Primero se atiende a los suspendidos: les baja la espera y los que terminan pasan a Preparados.
     this.avanzarSuspension();
 
-    const actual = this.simulador.enEjecucion;
+    const procesoActual = this.simulador.enEjecucion;
 
-    // Caso 1: nadie está en la CPU, entonces baja el siguiente (si hay).
-    if (actual === null || actual.bcp === null) {
-      this.ponerEnEjecucion(this.simulador.preparados.extraerMenor());
+    // CPU libre: sube el siguiente proceso de Preparados (si hay).
+    if (procesoActual === null || procesoActual.bcp === null) {
+      const siguiente = this.simulador.preparados.extraerMenor();
+      this.ponerEnEjecucion(siguiente);
       return;
     }
 
-    // Caso 2: hay un proceso corriendo, gasta 1 unidad de tiempo restante...
-    actual.bcp.gastarTiempo();
-    // ...y 1 unidad de su turno.
+    // CPU ocupada: el proceso gasta 1 unidad de tiempo y 1 de su turno.
+    procesoActual.bcp.gastarTiempo();
     this.simulador.turnoGastado++;
 
-    // ¿Terminó el proceso o se acabó su turno? Entonces hay cambio.
-    const terminado = actual.bcp.estaTerminado;
-    const turnoAcabado = this.simulador.turnoGastado >= actual.bcp.quantum;
-    if (terminado || turnoAcabado) {
+    const procesoTerminado = procesoActual.bcp.estaTerminado;
+    const turnoAcabado = this.simulador.turnoGastado >= procesoActual.bcp.quantum;
+
+    if (procesoTerminado || turnoAcabado) {
       this.cambiarProceso();
     }
   }
 
-  // A cada proceso suspendido le baja 1 la espera. Si ya no le queda espera,
-  // sale de Suspendido y entra al árbol de Preparados.
+  // =======================================================
   private avanzarSuspension(): void {
-    // Recorro una COPIA de la lista, porque reanudarProceso va sacando
-    // procesos de la lista original mientras la recorro.
-    const copiaDeSuspendidos = [...this.simulador.suspendidos];
+    // A cada suspendido le baja 1 la espera; si ya no le queda, vuelve a Preparados.
+    // Se recorre una copia porque reanudarProceso saca procesos
+    // de la lista original y nos saltaríamos alguno.
+    const copiaDeSuspendidos = this.simulador.suspendidos.slice();
 
     for (const proceso of copiaDeSuspendidos) {
-      if (proceso.bcp === null) continue;
+      if (proceso.bcp !== null) {
+        proceso.bcp.gastarTiempoInteractividad();
 
-      proceso.bcp.gastarTiempoInteractividad();
-
-      if (!proceso.bcp.tieneSuspensionPendiente) {
-        this.simulador.reanudarProceso(proceso);
+        if (!proceso.bcp.tieneSuspensionPendiente) {
+          this.simulador.reanudarProceso(proceso);
+        }
       }
     }
   }
 
-  // Hace el cambio descrito en "El ciclo de ejecución".
-  // Hace el cambio descrito en "El ciclo de ejecución", ahora con Suspendido.
+  // ======================================================
   private cambiarProceso(): void {
-    const saliente = this.simulador.enEjecucion;
-    if (saliente === null || saliente.bcp === null) return;
+    const procesoSaliente = this.simulador.enEjecucion;
 
-    // Guardo esto ANTES, porque terminarProceso le quita el BCP.
-    const terminado = saliente.bcp.estaTerminado;
-    // Solo se suspende si NO terminó y todavía tiene espera pendiente.
-    const debeSuspenderse = !terminado && saliente.bcp.tieneSuspensionPendiente;
-    // Si no terminó ni se suspende, vuelve al árbol de Preparados.
-    const debeVolverAPreparados = !terminado && !debeSuspenderse;
+    if (procesoSaliente === null || procesoSaliente.bcp === null) {
+      return;
+    }
 
-    // Paso 1: primero baja el siguiente del árbol.
-    const siguiente = this.simulador.preparados.extraerMenor();
+    // Se calcula antes de mover el proceso, porque terminarProceso le quita el BCP.
+    const haTerminado = procesoSaliente.bcp.estaTerminado;
+    const debeSuspenderse = (!haTerminado && procesoSaliente.bcp.tieneSuspensionPendiente);
+    const debeVolverAPreparados = (!haTerminado && !debeSuspenderse);
 
-    // Árbol vacío y el proceso debía volver a Preparados:
-    // el mismo proceso sigue en la CPU, con un turno nuevo.
-    if (siguiente === null && debeVolverAPreparados) {
+    const procesoSiguiente = this.simulador.preparados.extraerMenor();
+
+    // Si no hay nadie más en Preparados, el mismo proceso sigue con un turno nuevo.
+    if (procesoSiguiente === null && debeVolverAPreparados) {
       this.simulador.turnoGastado = 0;
       return;
     }
 
-    // Paso 2: el proceso que sale va a su destino.
-    if (terminado) {
-      this.simulador.terminarProceso(saliente); // pierde el BCP, vuelve a Programas
+    if (haTerminado) {
+      this.simulador.terminarProceso(procesoSaliente);
     } else if (debeSuspenderse) {
-      this.simulador.suspenderProceso(saliente); // espera en Suspendido
+      this.simulador.suspenderProceso(procesoSaliente);
     } else {
-      saliente.estado = "preparado";
-      this.simulador.preparados.insertar(saliente); // vuelve al árbol
+      procesoSaliente.estado = "preparado";
+      this.simulador.preparados.insertar(procesoSaliente);
     }
 
-    // Paso 3: la CPU queda ocupada por el siguiente, o libre si no había nadie.
-    if (siguiente !== null) {
-      this.ponerEnEjecucion(siguiente);
+    if (procesoSiguiente !== null) {
+      this.ponerEnEjecucion(procesoSiguiente);
     } else {
       this.simulador.enEjecucion = null;
       this.simulador.turnoGastado = 0;
     }
   }
 
-  // Sube un proceso a la CPU y empieza su turno desde cero.
+  // ======================================================
   private ponerEnEjecucion(proceso: Proceso | null): void {
-    if (proceso === null) return;
-    
+    if (proceso === null) {
+      return;
+    }
+
     proceso.estado = "ejecucion";
     this.simulador.enEjecucion = proceso;
     this.simulador.turnoGastado = 0;
