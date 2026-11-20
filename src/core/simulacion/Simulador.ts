@@ -7,16 +7,9 @@ export class Simulador {
   // Cuántas unidades lleva gastadas el proceso en ejecución dentro de su turno.
   public turnoGastado: number = 0;
 
-  // Los programas son Procesos que todavía no tienen BCP.
   public programas: Proceso[] = [];
-
-  // Árbol de preparados: el siguiente en ejecutarse es el más a la izquierda.
   public preparados: ArbolPrioridadMinima = new ArbolPrioridadMinima();
-
-  // Proceso que está usando la CPU ahora. Es null si no hay ninguno.
   public enEjecucion: Proceso | null = null;
-
-    // Procesos que están esperando en Suspendido. Cada uno lleva su propia cuenta en el BCP.
   public suspendidos: Proceso[] = [];
 
   // Recibe los nombres y colores iniciales de los programas.
