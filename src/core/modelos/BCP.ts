@@ -7,7 +7,7 @@ export class BCP {
   private static readonly TIEMPO_CPU_MAX = 10;
   private static readonly PRIORIDAD_MIN = 1;
   private static readonly PRIORIDAD_MAX = 5;
-  private static readonly INTERACTIVIDAD_MIN = 1;
+  private static readonly INTERACTIVIDAD_MIN = 0;
   private static readonly INTERACTIVIDAD_MAX = 5;
 
   // Uso static para que todas las instancias de BCP compartan la misma secuencia de PID.
