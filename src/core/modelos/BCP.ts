@@ -34,10 +34,16 @@ export class BCP {
     // 5 es la prioridad mas alta.
     this.prioridad = BCP.numeroAleatorio(BCP.PRIORIDAD_MIN, BCP.PRIORIDAD_MAX);
 
-    this.interactividad = BCP.numeroAleatorio(
-      BCP.INTERACTIVIDAD_MIN,
-      BCP.INTERACTIVIDAD_MAX,
-    );
+    // Un proceso con tiempo de CPU 1 termina en su primer turno, así que no tiene
+    // nada que esperar en Suspendido: su interactividad es siempre 0.
+    if (this.tiempoCpu === 1) {
+      this.interactividad = 0;
+    } else {
+      this.interactividad = BCP.numeroAleatorio(
+        BCP.INTERACTIVIDAD_MIN,
+        BCP.INTERACTIVIDAD_MAX,
+      );
+    }
 
     this._tiempoRestante = this.tiempoCpu;
     
