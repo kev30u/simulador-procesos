@@ -17,7 +17,7 @@ export default function Controles({
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
-          aria-label="Detener"
+          aria-label="Reiniciar"
           onClick={onDetener}
           className="rounded-md bg-red-100 px-3 py-2 font-bold text-red-700 hover:bg-red-200"
         >
@@ -25,9 +25,14 @@ export default function Controles({
             aria-hidden="true"
             className="h-5 w-5"
             viewBox="0 0 24 24"
-            fill="currentColor"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            <rect x="5" y="5" width="14" height="14" rx="1" />
+            <path d="M20 11a8 8 0 1 0-2.3 5.7" />
+            <path d="M20 6v5h-5" />
           </svg>
         </button>
         <button
