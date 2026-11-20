@@ -3,3 +3,45 @@
 body {
   margin: 0;
 }
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes value-flash {
+  0% {
+    background-color: rgba(59, 130, 246, 0.16);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes tooltip-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.animate-value-flash {
+  animation: value-flash 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.animate-tooltip-in {
+  animation: tooltip-in 150ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

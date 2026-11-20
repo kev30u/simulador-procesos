@@ -31,11 +31,7 @@ export default function Ejecucion({ proceso, turnoGastado }: EjecucionProps) {
 
       <div className="mb-4 flex justify-center">
         {proceso !== null && (
-          <BolitaProceso
-            key={proceso.bcp?.pid}
-            proceso={proceso}
-            mostrarProgresoCpu
-          />
+          <BolitaProceso proceso={proceso} mostrarProgresoCpu />
         )}
         {proceso === null && (
           <p className="text-sm text-slate-500">
@@ -44,10 +40,10 @@ export default function Ejecucion({ proceso, turnoGastado }: EjecucionProps) {
         )}
       </div>
 
-      <div className="h-5 w-full rounded-full bg-slate-200">
+      <div className="h-5 w-full overflow-hidden rounded-full bg-slate-200">
         <div
           key={proceso?.bcp?.pid ?? "sin-proceso"}
-          className="h-5 rounded-full transition-[width] duration-300 ease-in-out"
+          className="h-5 rounded-full transition-[width] duration-300 ease-out"
           style={{
             width: `${progreso}%`,
             backgroundColor: proceso === null ? "#CBD5E1" : proceso.color,
@@ -55,7 +51,7 @@ export default function Ejecucion({ proceso, turnoGastado }: EjecucionProps) {
         />
       </div>
 
-      <p className="mt-2 text-right text-xs text-slate-500">
+      <p className="tabular-nums mt-2 text-right text-xs text-slate-500">
         {progreso}% del quantum
       </p>
     </div>

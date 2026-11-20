@@ -8,6 +8,7 @@ import PanelBCP from "@/components/PanelBCP";
 import Preparados from "@/components/Preparados";
 import Programas from "@/components/Programas";
 import Suspendidos from "@/components/Suspendidos";
+import { useProcesoFlip } from "@/hooks/useProcesoFlip";
 import {
   avanzarUnTick,
   iniciarPrograma,
@@ -24,6 +25,7 @@ export default function Home() {
   const intervaloSimulacion = useRef<ReturnType<typeof setInterval> | null>(
     null,
   );
+  const areaSimuladorRef = useRef<HTMLDivElement | null>(null);
 
   // ============ Acciones de la simulación ============
   async function avanzarSimulacion() {
@@ -127,10 +129,20 @@ export default function Home() {
     procesoEnEjecucion = estado.enEjecucion;
   }
 
+  // Animación FLIP fluida al mover procesos entre colas y reordenar Preparados
+  const claveDisposicion = [
+    programas.map((p) => p.nombre).join(","),
+    procesosPreparados.map((p) => p.nombre).join(","),
+    procesoEnEjecucion?.nombre ?? "",
+    procesosSuspendidos.map((p) => p.nombre).join(","),
+  ].join("|");
+
+  useProcesoFlip(areaSimuladorRef, claveDisposicion);
+
   // ============ Mostrar la página ============
   return (
     <main className="min-h-screen bg-slate-100 p-4 text-slate-800 sm:p-6">
-      <div className="mx-auto max-w-7xl">
+      <div ref={areaSimuladorRef} className="mx-auto max-w-7xl">
         <h1 className="mb-6 text-2xl font-bold text-slate-900">
           Simulador de procesos
         </h1>

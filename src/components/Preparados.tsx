@@ -10,9 +10,13 @@ export default function Preparados({ procesos }: PreparadosProps) {
     <div className="rounded-md border border-slate-200 p-3">
       <h3 className="mb-3 font-medium">Procesos preparados</h3>
       <div className="flex flex-wrap gap-4">
-        {procesos.map((proceso) => (
+        {procesos.map((proceso, indice) => (
           <div key={proceso.nombre} className="flex flex-col items-center gap-2">
-            <BolitaProceso proceso={proceso} mostrarProgresoCpu />
+            <BolitaProceso
+              proceso={proceso}
+              mostrarProgresoCpu
+              indiceCola={indice + 1}
+            />
           </div>
         ))}
       </div>
