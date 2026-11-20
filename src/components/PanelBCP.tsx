@@ -39,6 +39,8 @@ function FilaBCP({
   );
 }
 
+
+// ====================  Componente Panel  ====================
 export default function PanelBCP({ proceso }: PanelBCPProps) {
   const bcp = proceso?.bcp ?? null;
 

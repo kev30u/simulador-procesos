@@ -28,6 +28,8 @@ export default function Home() {
   const areaSimuladorRef = useRef<HTMLDivElement | null>(null);
 
   // ============ Acciones de la simulación ============
+  
+  // ===================================================
   async function avanzarSimulacion() {
     try {
       const nuevoEstado = await avanzarUnTick();

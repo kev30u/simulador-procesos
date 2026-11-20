@@ -20,6 +20,8 @@ function calcularProgresoQuantum(
   return Math.min(100, Math.round(progreso));
 }
 
+
+// ==========================  Componente Ejecución  ==========================
 export default function Ejecucion({ proceso, turnoGastado }: EjecucionProps) {
   const progreso = calcularProgresoQuantum(proceso, turnoGastado);
 

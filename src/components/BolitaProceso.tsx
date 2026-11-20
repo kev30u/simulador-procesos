@@ -101,12 +101,12 @@ export default function BolitaProceso({
     return (
       <div
         data-proceso-id={proceso.nombre}
-        className="group relative w-full"
+        className="relative w-full"
       >
         <button
           type="button"
           onClick={onClick}
-          className="relative flex w-full cursor-pointer items-center justify-between gap-3 overflow-hidden rounded-md border border-slate-200 bg-white px-3 py-2.5 text-left shadow-xs transition-all duration-150 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 active:translate-y-0 active:scale-[0.99]"
+          className="relative flex w-full cursor-pointer items-center justify-between gap-3 overflow-hidden rounded-md border border-slate-200 bg-white px-3 py-2.5 text-left shadow-xs active:scale-[0.99]"
         >
           <span
             aria-hidden="true"
@@ -132,8 +132,6 @@ export default function BolitaProceso({
             </div>
           </div>
         </button>
-
-        {tooltip}
       </div>
     );
   }
